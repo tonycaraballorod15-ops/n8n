@@ -1,0 +1,136 @@
+<svg width="1800" height="900" viewBox="0 0 1800 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Infografía de la estructura de la plataforma TCR Salsa Social Publisher</title>
+  <desc id="desc">Diagrama visual a colores con el orden de nodos de n8n para publicar en Facebook, Instagram y TikTok.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1020" />
+      <stop offset="100%" stop-color="#111b3a" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#a7b3d7"/>
+    </marker>
+    <style>
+      .title { font: 700 44px 'Segoe UI', Arial, sans-serif; fill: #f8fbff; }
+      .subtitle { font: 500 22px 'Segoe UI', Arial, sans-serif; fill: #cfd8ff; }
+      .legend { font: 500 18px 'Segoe UI', Arial, sans-serif; fill: #d8e1ff; }
+      .nodeTitle { font: 700 22px 'Segoe UI', Arial, sans-serif; fill: #fff; }
+      .nodeId { font: 600 16px 'Segoe UI', Arial, sans-serif; fill: #eaf1ff; }
+      .small { font: 500 15px 'Segoe UI', Arial, sans-serif; fill: #edf3ff; }
+      .badge { font: 800 22px 'Segoe UI', Arial, sans-serif; fill: #0f172a; }
+      .orderText { font: 700 17px 'Segoe UI', Arial, sans-serif; fill: #f5f8ff; }
+      .arrowText { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #dbe4ff; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1800" height="900" fill="url(#bg)" />
+
+  <text x="70" y="75" class="title">TCR Salsa Platform — Estructura Visual de la App</text>
+  <text x="70" y="112" class="subtitle">Orden operativo con nombre exacto de cada nodo (workflow n8n)</text>
+
+  <rect x="70" y="140" width="1660" height="70" rx="16" fill="#1b2a52" stroke="#4c67a7"/>
+  <text x="95" y="183" class="legend">Flujo principal: Entrada → Validación → Decisión (programado/inmediato) → Publicación por canal → Respuesta</text>
+
+  <line x1="220" y1="330" x2="420" y2="330" stroke="#a7b3d7" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="620" y1="330" x2="820" y2="330" stroke="#a7b3d7" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <line x1="1020" y1="290" x2="1180" y2="220" stroke="#a7b3d7" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="1050" y="238" class="arrowText">si programado</text>
+
+  <line x1="1020" y1="370" x2="1180" y2="430" stroke="#a7b3d7" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="1040" y="412" class="arrowText">si inmediato</text>
+
+  <line x1="1420" y1="220" x2="1540" y2="310" stroke="#a7b3d7" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="1420" y1="430" x2="1540" y2="330" stroke="#a7b3d7" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="1420" y1="640" x2="1540" y2="350" stroke="#a7b3d7" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <line x1="1730" y1="330" x2="1730" y2="330" stroke="#a7b3d7" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="1710" y1="330" x2="1710" y2="520" stroke="#a7b3d7" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="260" width="240" height="140" rx="18" fill="#0ea5e9"/>
+    <circle cx="108" cy="296" r="22" fill="#fef08a"/>
+    <text x="100" y="303" class="badge">1</text>
+    <text x="140" y="300" class="nodeTitle">Webhook Create Post</text>
+    <text x="140" y="328" class="nodeId">Webhook_CreatePost</text>
+    <text x="90" y="362" class="small">Entrada HTTP /create-post</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="420" y="260" width="240" height="140" rx="18" fill="#6366f1"/>
+    <circle cx="458" cy="296" r="22" fill="#fef08a"/>
+    <text x="450" y="303" class="badge">2</text>
+    <text x="490" y="300" class="nodeTitle">Normalize Input</text>
+    <text x="490" y="328" class="nodeId">Code_NormalizeInput</text>
+    <text x="440" y="362" class="small">Valida caption/mediaUrl</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="770" y="260" width="260" height="140" rx="18" fill="#8b5cf6"/>
+    <circle cx="808" cy="296" r="22" fill="#fef08a"/>
+    <text x="800" y="303" class="badge">3</text>
+    <text x="840" y="300" class="nodeTitle">Is Scheduled</text>
+    <text x="840" y="328" class="nodeId">If_Scheduled</text>
+    <text x="790" y="362" class="small">Decisión por publishAt</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1180" y="150" width="250" height="140" rx="18" fill="#14b8a6"/>
+    <circle cx="1218" cy="186" r="22" fill="#fef08a"/>
+    <text x="1210" y="193" class="badge">4</text>
+    <text x="1250" y="190" class="nodeTitle">Wait Until Publish</text>
+    <text x="1250" y="218" class="nodeId">Wait_UntilPublish</text>
+    <text x="1200" y="252" class="small">Espera fecha programada</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1180" y="360" width="250" height="140" rx="18" fill="#2563eb"/>
+    <circle cx="1218" cy="396" r="22" fill="#fef08a"/>
+    <text x="1210" y="403" class="badge">5</text>
+    <text x="1250" y="400" class="nodeTitle">Post Facebook</text>
+    <text x="1250" y="428" class="nodeId">HTTP_Facebook</text>
+    <text x="1200" y="462" class="small">POST Meta Graph API</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1180" y="570" width="250" height="140" rx="18" fill="#db2777"/>
+    <circle cx="1218" cy="606" r="22" fill="#fef08a"/>
+    <text x="1210" y="613" class="badge">6</text>
+    <text x="1250" y="610" class="nodeTitle">Post Instagram</text>
+    <text x="1250" y="638" class="nodeId">HTTP_Instagram</text>
+    <text x="1200" y="672" class="small">POST Instagram Graph API</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1460" y="570" width="250" height="140" rx="18" fill="#f97316"/>
+    <circle cx="1498" cy="606" r="22" fill="#fef08a"/>
+    <text x="1490" y="613" class="badge">7</text>
+    <text x="1530" y="610" class="nodeTitle">Post TikTok</text>
+    <text x="1530" y="638" class="nodeId">HTTP_TikTok</text>
+    <text x="1480" y="672" class="small">POST TikTok Content API</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1540" y="260" width="230" height="140" rx="18" fill="#10b981"/>
+    <circle cx="1578" cy="296" r="22" fill="#fef08a"/>
+    <text x="1570" y="303" class="badge">8</text>
+    <text x="1610" y="300" class="nodeTitle">Merge Results</text>
+    <text x="1610" y="328" class="nodeId">Merge_Results</text>
+    <text x="1560" y="362" class="small">Consolida respuestas</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1510" y="500" width="260" height="140" rx="18" fill="#ef4444"/>
+    <circle cx="1548" cy="536" r="22" fill="#fef08a"/>
+    <text x="1540" y="543" class="badge">9</text>
+    <text x="1580" y="540" class="nodeTitle">Respond Webhook</text>
+    <text x="1580" y="568" class="nodeId">Respond_Webhook</text>
+    <text x="1530" y="602" class="small">Retorna JSON final al cliente</text>
+  </g>
+
+  <rect x="70" y="790" width="1660" height="70" rx="14" fill="#172554" stroke="#3b82f6"/>
+  <text x="100" y="833" class="orderText">Orden recomendado: 1 Webhook → 2 Normalize Input → 3 Is Scheduled → 4 Wait (si aplica) → 5 Facebook + 6 Instagram + 7 TikTok → 8 Merge Results → 9 Respond Webhook</text>
+</svg>
