@@ -1,0 +1,267 @@
+{
+  "name": "TCR Salsa Social Publisher",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "tcr-salsa/create-post",
+        "responseMode": "responseNode"
+      },
+      "id": "Webhook_CreatePost",
+      "name": "Webhook Create Post",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\n\nif (!body.caption || !body.mediaUrl) {\n  throw new Error('caption and mediaUrl are required');\n}\n\nreturn [{\n  json: {\n    title: body.title ?? '',\n    caption: body.caption,\n    mediaUrl: body.mediaUrl,\n    publishAt: body.publishAt ?? null,\n    platforms: Array.isArray(body.platforms) ? body.platforms : ['facebook', 'instagram', 'tiktok'],\n    tags: Array.isArray(body.tags) ? body.tags : []\n  }\n}];"
+      },
+      "id": "Code_NormalizeInput",
+      "name": "Normalize Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{$json.publishAt}}",
+              "operation": "after"
+            }
+          ]
+        }
+      },
+      "id": "If_Scheduled",
+      "name": "Is Scheduled",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        760,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{$json.publishAt}}"
+      },
+      "id": "Wait_UntilPublish",
+      "name": "Wait Until Publish",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1010,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.FACEBOOK_POST_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { message: $json.caption, url: $json.mediaUrl } }}"
+      },
+      "id": "HTTP_Facebook",
+      "name": "Post Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1280,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.INSTAGRAM_POST_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { caption: $json.caption, image_url: $json.mediaUrl } }}"
+      },
+      "id": "HTTP_Instagram",
+      "name": "Post Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.TIKTOK_POST_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { title: $json.title, description: $json.caption, video_url: $json.mediaUrl } }}"
+      },
+      "id": "HTTP_TikTok",
+      "name": "Post TikTok",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1280,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition"
+      },
+      "id": "Merge_Results",
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, executionId: $execution.id, data: $json } }}"
+      },
+      "id": "Respond_Webhook",
+      "name": "Respond Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Create Post": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Input": {
+      "main": [
+        [
+          {
+            "node": "Is Scheduled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Scheduled": {
+      "main": [
+        [
+          {
+            "node": "Wait Until Publish",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Post Facebook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post Instagram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post TikTok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Until Publish": {
+      "main": [
+        [
+          {
+            "node": "Post Facebook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post Instagram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post TikTok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Facebook": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Instagram": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Post TikTok": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Respond Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "tcr-social-template-v1"
+}
